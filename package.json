@@ -1,7 +1,9 @@
 {
   "dependencies": {
+    "aws-sdk": "2.1106.0",
     "cheerio": "1.0.0-rc.10",
     "chrome-aws-lambda": "10.1.0",
+    "mongoose": "6.2.9",
     "puppeteer-core": "10.4.0"
   },
   "devDependencies": {
