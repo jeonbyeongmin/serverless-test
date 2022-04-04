@@ -35,11 +35,32 @@ async function getLastestPost(site) {
   }
 }
 
+async function putPost(item) {
+  try {
+    await docClient
+      .put({
+        TableName: TABLE_NAME,
+        Item: {
+          id: item.id,
+          site: item.site,
+          title: item.title,
+          url: item.url,
+          timestamp: item.timestamp,
+          category: item.category,
+        },
+      })
+      .promise();
+  } catch (error) {
+    throw new Error("Failed during putting item to db", error);
+  }
+}
+
 module.exports.handler = async (event, context) => {
   try {
-    blogs.map(async (blog, index) => {
-      await axios(blog.rss).then(async (res) => {
-        const data = res.data;
+    await Promise.all(
+      blogs.map(async (blog, index) => {
+        const response = await axios.get(blog.rss);
+        const data = response.data;
         const $ = cheerio.load(data, { xmlMode: true });
         const lastestPost = await getLastestPost(blog.name);
         let isLastest = true;
@@ -63,23 +84,12 @@ module.exports.handler = async (event, context) => {
           }
 
           if (isLastest) {
-            await docClient
-              .put({
-                TableName: TABLE_NAME,
-                Item: {
-                  id: id,
-                  site: site,
-                  title: title,
-                  url: url,
-                  timestamp: timestamp,
-                  category: category,
-                },
-              })
-              .promise();
+            await putPost({ site, title, url, id, category, timestamp });
+            console.log({ site, title, url, id, category, timestamp });
           }
         });
-      });
-    });
+      })
+    );
 
     return {
       statusCode: 200,

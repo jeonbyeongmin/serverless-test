@@ -4,19 +4,21 @@ frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   memorySize: 256
   timeout: 30
   # ap-northeast-2 === 서울
   region: ap-northeast-2
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-        - dynamodb:*
-      Resource: "*"
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:*
+          Resource: "*"
 
 functions:
   crawl:
     handler: src/crawl.handler
     events:
-      - schedule: rate(1 hour)
+      - schedule: rate(10 minutes)

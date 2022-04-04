@@ -1,7 +1,7 @@
 module.exports.blogs = [
   { id: 1, name: "kakao", rss: "https://tech.kakao.com/feed/" },
   { id: 2, name: "woowa", rss: "https://techblog.woowahan.com/feed/" },
-  { id: 3, name: "nhn", rss: "https://meetup.toast.com/rss" },
+  { id: 3, name: "banksalad", rss: "https://blog.banksalad.com/rss.xml" },
   { id: 4, name: "kurly", rss: "https://helloworld.kurly.com/feed.xml" },
   { id: 5, name: "watcha", rss: "https://medium.com/feed/watcha" },
   { id: 6, name: "daangn", rss: "https://medium.com/feed/daangn" },
@@ -52,4 +52,8 @@ module.exports.blogs = [
   { id: 31, name: "opgg", rss: " https://log.op.gg/feed/" },
   { id: 32, name: "kimjeonghwan", rss: "https://jeonghwan-kim.github.io/feed" },
   { id: 33, name: "toast", rss: "https://ui.toast.com/rss" },
+  { id: 34, name: "jojoldu", rss: "https://jojoldu.tistory.com/rss" },
+  { id: 35, name: "yogiyo", rss: "https://techblog.yogiyo.co.kr/feed" },
+  { id: 36, name: "hyperconnect", rss: "https://hyperconnect.github.io/feed" },
+  { id: 37, name: "29cm", rss: "https://medium.com/feed/29cm" },
 ];
