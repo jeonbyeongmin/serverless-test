@@ -1,11 +1,11 @@
-service: scrap-crawler
+service: tech-scrap
 
 frameworkVersion: "3"
 
 provider:
   name: aws
   runtime: nodejs12.x
-  memorySize: 512
+  memorySize: 256
   timeout: 30
   # ap-northeast-2 === 서울
   region: ap-northeast-2
@@ -15,15 +15,8 @@ provider:
         - dynamodb:*
       Resource: "*"
 
-package:
-  exclude:
-    - node_modules/puppeteer/.local-chromium/**
-
 functions:
-  scrap:
-    handler: src/index.handler
+  crawl:
+    handler: src/crawl.handler
     events:
-      - http:
-          path: /scrap
-          method: get
-      # - schedule: cron(5 0-8 ? * MON-FRI *)
+      - schedule: rate(1 hour)
