@@ -7,7 +7,6 @@ provider:
   runtime: nodejs14.x
   memorySize: 256
   timeout: 30
-  # ap-northeast-2 === 서울
   region: ap-northeast-2
   iam:
     role:
@@ -21,4 +20,10 @@ functions:
   crawl:
     handler: src/crawl.handler
     events:
-      - schedule: rate(10 minutes)
+      - schedule: rate(1 hour)
+  readPosts:
+    handler: src/readPosts.handler
+    events:
+      - http:
+          path: post/{postId}/{type}
+          method: get

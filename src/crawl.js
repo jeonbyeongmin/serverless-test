@@ -10,43 +10,44 @@ AWS.config.update({
   endpoint: "http://dynamodb.ap-northeast-2.amazonaws.com",
 });
 
-const docClient = new AWS.DynamoDB.DocumentClient();
-
-const TABLE_NAME = "tech-scrap";
+const dynamo = new AWS.DynamoDB.DocumentClient();
 
 async function getLastestPost(site) {
   try {
-    const posts = await docClient
+    const posts = await dynamo
       .query({
-        TableName: TABLE_NAME,
-        KeyConditionExpression: "#site = :site",
+        TableName: "CrawlingPosts",
+        IndexName: "SitePostIdIndex",
+        KeyConditionExpression: "#Site = :Site",
         ExpressionAttributeNames: {
-          "#site": "site",
+          "#Site": "Site",
         },
         ExpressionAttributeValues: {
-          ":site": site,
+          ":Site": site,
         },
+        ScanIndexForward: false,
       })
       .promise();
-
-    return posts.Items[posts.Items.length - 1];
+    return posts.Items[0];
   } catch (error) {
-    throw new Error(`Failed: ${error}`);
+    throw new Error("Failed during getting lastest post item", error);
   }
 }
 
 async function putPost(item) {
   try {
-    await docClient
+    await dynamo
       .put({
-        TableName: TABLE_NAME,
+        TableName: "CrawlingPosts",
         Item: {
-          id: item.id,
-          site: item.site,
-          title: item.title,
-          url: item.url,
-          timestamp: item.timestamp,
-          category: item.category,
+          Type: item.type,
+          PostId: item.id,
+          Site: item.site,
+          SiteUrl: item.siteUrl,
+          Title: item.title,
+          Timestamp: item.timestamp,
+          Category: item.category,
+          Views: 0,
         },
       })
       .promise();
@@ -66,9 +67,10 @@ module.exports.handler = async (event, context) => {
         let isLastest = true;
 
         $("item").each(async (_, post) => {
+          const type = "tech";
           const site = blog.name;
           const title = $(post).find("title").text();
-          const url = $(post).find("link").text();
+          const siteUrl = $(post).find("link").text();
           const timestamp = Date.parse($(post).find("pubDate").text());
           const id = `${timestamp}#${pad(blog.id, 4)}`;
           const category = [];
@@ -79,23 +81,39 @@ module.exports.handler = async (event, context) => {
               category.push($(cate).text());
             });
 
-          if (lastestPost?.url === url) {
+          if (lastestPost?.SiteUrl === siteUrl) {
             isLastest = false;
           }
 
           if (isLastest) {
-            await putPost({ site, title, url, id, category, timestamp });
-            console.log({ site, title, url, id, category, timestamp });
+            await putPost({
+              type,
+              site,
+              title,
+              siteUrl,
+              id,
+              category,
+              timestamp,
+            });
+            console.log({
+              type,
+              site,
+              title,
+              siteUrl,
+              id,
+              category,
+              timestamp,
+            });
           }
         });
       })
     );
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: "Success!" }),
-    };
   } catch (error) {
     throw new Error(`Failed: ${error}`);
   }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ message: "Success!" }),
+  };
 };
