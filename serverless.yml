@@ -1,4 +1,4 @@
-service: tech-scrap
+service: scrap
 
 frameworkVersion: "3"
 
@@ -20,10 +20,10 @@ functions:
   crawl:
     handler: src/crawl.handler
     events:
-      - schedule: rate(1 hour)
+      - schedule: rate(5 minutes)
   readPosts:
     handler: src/readPosts.handler
     events:
       - http:
-          path: post/{postId}/{type}
+          path: post
           method: get
