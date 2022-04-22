@@ -9,8 +9,8 @@ exports.handler = async (event, conteext) => {
     "Content-Type": "application/json",
   };
 
-  // const postId = event?.pathParameters?.postId;
-  // const type = event?.pathParameters?.type;
+  const postId = event?.queryStringParameters?.postId;
+  const type = event?.queryStringParameters?.type;
 
   try {
     const params = {
@@ -26,7 +26,7 @@ exports.handler = async (event, conteext) => {
       Limit: 20,
     };
 
-    // if (postId) params.ExclusiveStartKey = { PostId: postId, Type: type };
+    if (postId) params.ExclusiveStartKey = { PostId: postId, Type: type };
 
     body = await dynamo.query(params).promise();
   } catch (error) {

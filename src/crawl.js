@@ -47,6 +47,7 @@ async function putPost(item) {
           Title: item.title,
           Timestamp: item.timestamp,
           Category: item.category,
+          ImageUrl: item.imageUrl,
           Views: 0,
         },
       })
@@ -56,12 +57,26 @@ async function putPost(item) {
   }
 }
 
+async function fetchHtml(link) {
+  return await axios.get(link);
+}
+
+async function parseImageUrl(url) {
+  try {
+    const { data } = await fetchHtml(url);
+    const $ = cheerio.load(data);
+    const content = $(`head > meta[property="og:image"]`).attr("content");
+    return content;
+  } catch (error) {
+    return undefined;
+  }
+}
+
 module.exports.handler = async (event, context) => {
   try {
     await Promise.all(
       blogs.map(async (blog, index) => {
-        const response = await axios.get(blog.rss);
-        const data = response.data;
+        const { data } = await fetchHtml(blog.rss);
         const $ = cheerio.load(data, { xmlMode: true });
         const lastestPost = await getLastestPost(blog.name);
         let isLastest = true;
@@ -86,6 +101,7 @@ module.exports.handler = async (event, context) => {
           }
 
           if (isLastest) {
+            const imageUrl = await parseImageUrl(siteUrl);
             await putPost({
               type,
               site,
@@ -94,6 +110,7 @@ module.exports.handler = async (event, context) => {
               id,
               category,
               timestamp,
+              imageUrl,
             });
             console.log({
               type,
@@ -103,6 +120,7 @@ module.exports.handler = async (event, context) => {
               id,
               category,
               timestamp,
+              imageUrl,
             });
           }
         });
