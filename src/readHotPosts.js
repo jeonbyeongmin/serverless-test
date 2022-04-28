@@ -9,12 +9,10 @@ exports.handler = async (event, context) => {
     "Content-Type": "application/json",
   };
 
-  const postId = event?.queryStringParameters?.postId;
-  const type = event?.queryStringParameters?.type;
-
   try {
     const params = {
       TableName: "CrawlingPosts",
+      IndexName: "Type-Views-index",
       KeyConditionExpression: "#Type = :Type",
       ExpressionAttributeNames: {
         "#Type": "Type",
@@ -25,8 +23,6 @@ exports.handler = async (event, context) => {
       ScanIndexForward: false,
       Limit: 20,
     };
-
-    if (postId) params.ExclusiveStartKey = { PostId: postId, Type: type };
 
     body = await dynamo.query(params).promise();
   } catch (error) {

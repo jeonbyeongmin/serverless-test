@@ -65,7 +65,10 @@ async function parseImageUrl(url) {
   try {
     const { data } = await fetchHtml(url);
     const $ = cheerio.load(data);
-    const content = $(`head > meta[property="og:image"]`).attr("content");
+    let content = $(`head > meta[property="og:image"]`).attr("content");
+
+    if (!content.includes("http")) content = undefined;
+
     return content;
   } catch (error) {
     return undefined;
@@ -79,6 +82,7 @@ module.exports.handler = async (event, context) => {
         const { data } = await fetchHtml(blog.rss);
         const $ = cheerio.load(data, { xmlMode: true });
         const lastestPost = await getLastestPost(blog.name);
+        console.log(lastestPost);
         let isLastest = true;
 
         $("item").each(async (_, post) => {

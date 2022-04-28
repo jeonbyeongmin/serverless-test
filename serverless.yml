@@ -27,3 +27,15 @@ functions:
       - http:
           path: post
           method: get
+  readHotPosts:
+    handler: src/readHotPosts.handler
+    events:
+      - http:
+          path: hotPost
+          method: get
+  updateViews:
+    handler: src/updateViews.handler
+    events:
+      - http:
+          path: post/views
+          method: patch

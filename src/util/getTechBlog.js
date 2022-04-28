@@ -2,7 +2,6 @@ module.exports.blogs = [
   { id: 1, name: "kakao", rss: "https://tech.kakao.com/feed/" },
   { id: 2, name: "woowa", rss: "https://techblog.woowahan.com/feed/" },
   { id: 3, name: "banksalad", rss: "https://blog.banksalad.com/rss.xml" },
-  { id: 4, name: "kurly", rss: "https://helloworld.kurly.com/feed.xml" },
   { id: 5, name: "watcha", rss: "https://medium.com/feed/watcha" },
   { id: 6, name: "daangn", rss: "https://medium.com/feed/daangn" },
   { id: 7, name: "wanted", rss: " https://medium.com/feed/wantedjobs" },
@@ -22,9 +21,7 @@ module.exports.blogs = [
     rss: "https://tech.kakaoenterprise.com/rss",
   },
   { id: 16, name: "11st", rss: "https://11st-tech.github.io/rss/" },
-  { id: 17, name: "brandi", rss: "http://labs.brandi.co.kr/feed" },
   { id: 18, name: "idus", rss: "https://medium.com/feed/idus-tech" },
-  { id: 19, name: "bbros", rss: "https://boostbrothers.github.io/feed" },
   {
     id: 20,
     name: "kakaoent",

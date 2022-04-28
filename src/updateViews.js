@@ -10,25 +10,25 @@ exports.handler = async (event, context) => {
   };
 
   const postId = event?.queryStringParameters?.postId;
-  const type = event?.queryStringParameters?.type;
 
   try {
     const params = {
       TableName: "CrawlingPosts",
-      KeyConditionExpression: "#Type = :Type",
+      Key: {
+        Type: "tech",
+        PostId: postId,
+      },
       ExpressionAttributeNames: {
-        "#Type": "Type",
+        "#post_views": "Views",
       },
+      UpdateExpression: "set #post_views = #post_views + :val",
       ExpressionAttributeValues: {
-        ":Type": "tech",
+        ":val": 1,
       },
-      ScanIndexForward: false,
-      Limit: 20,
+      ReturnValues: "UPDATED_NEW",
     };
 
-    if (postId) params.ExclusiveStartKey = { PostId: postId, Type: type };
-
-    body = await dynamo.query(params).promise();
+    body = await dynamo.update(params).promise();
   } catch (error) {
     statusCode = 400;
     body = error.message;
